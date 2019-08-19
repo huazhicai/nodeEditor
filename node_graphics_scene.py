@@ -26,6 +26,7 @@ class QDMGraphicsScene(QGraphicsScene):
         self.scene_width, self.scene_height = 6400, 6400
         # 设置场景的大小，和相对于视图的位置
         self.setSceneRect(-self.scene_width // 2, -self.scene_height // 2, self.scene_width, self.scene_height)
+        # self.setSceneRect(0, 0, 100, 1000)
 
         self.setBackgroundBrush(self._color_background)  # 刷背景色
 
