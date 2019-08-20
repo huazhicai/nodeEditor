@@ -6,7 +6,8 @@ from PyQt5.QtGui import *
 
 
 class QDMGraphicsScene(QGraphicsScene):
-    def __init__(self, parent=None):
+    """图形场景"""
+    def __init__(self, scene, parent=None):
         super().__init__(parent)
 
         # 控件设置
@@ -23,12 +24,12 @@ class QDMGraphicsScene(QGraphicsScene):
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
 
-        self.scene_width, self.scene_height = 6400, 6400
-        # 设置场景的大小，和相对于视图的位置
-        self.setSceneRect(-self.scene_width // 2, -self.scene_height // 2, self.scene_width, self.scene_height)
-        # self.setSceneRect(0, 0, 100, 1000)
 
         self.setBackgroundBrush(self._color_background)  # 刷背景色
+
+    def setGrScene(self, width, height):
+        """设置图形场景矩形框的相对视图位置和尺寸"""
+        self.setSceneRect(-width // 2, -height // 2, width, height)
 
     def drawBackground(self, painter, rect):
         """

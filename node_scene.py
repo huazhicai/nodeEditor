@@ -1,10 +1,11 @@
 from node_graphics_scene import QDMGraphicsScene
 
 
-class Scene:
+class Scene(object):
+    """基础场景"""
     def __init__(self):
-        self.nodes = []
-        self.edges = []
+        self.nodes = []  # 场景中的节点容器，用来接收节点
+        self.edges = []  # 场景中的边缘容器，用来接收边缘
 
         self.scene_width = 6400
         self.scene_height = 6400
@@ -12,7 +13,7 @@ class Scene:
         self.initUI()
 
     def initUI(self):
-        self.grScene = QDMGraphicsScene()
+        self.grScene = QDMGraphicsScene(self)
         self.grScene.setGrScene(self.scene_width, self.scene_height)
 
     def addNode(self, node):
