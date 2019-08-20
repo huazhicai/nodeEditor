@@ -30,7 +30,7 @@ class NodeEditorWnd(QWidget):
         # The QGraphicsView class provides a widget
         # for displaying the contents of a QGraphicsScene
         # graphicsView->setSceneRect(10,10,100,100)
-        self.view = QDMGraphicsView(self.grScene)
+        self.view = QDMGraphicsView(self.grScene, self)
         # self.view.setScene(self.grScene)  # 视图加载场景
         self.layout.addWidget(self.view)
 
