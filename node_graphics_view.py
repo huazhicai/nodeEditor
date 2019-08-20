@@ -80,6 +80,7 @@ class QDMGraphicsView(QGraphicsView):
     def rightMouseButtonRelease(self, event):
         return super().mouseReleaseEvent(event)
 
+    # 看不懂
     def wheelEvent(self, event):
         """滚轮缩放事件"""
         # calculate our zoom factor

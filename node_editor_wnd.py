@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 
 from node_graphics_scene import QDMGraphicsScene
 from node_graphics_view import QDMGraphicsView
+from node_scene import Scene
 
 
 class NodeEditorWnd(QWidget):
@@ -24,7 +25,8 @@ class NodeEditorWnd(QWidget):
 
         # 在视图场景中事件传递是View->Scene->Item这样的顺序
         # create graphics scene场景
-        self.grScene = QDMGraphicsScene()
+        self.scene = Scene()
+        self.grScene = self.scene.grScene
 
         # create graphics view 创建图形视图
         # The QGraphicsView class provides a widget
@@ -35,7 +37,7 @@ class NodeEditorWnd(QWidget):
         self.layout.addWidget(self.view)
 
         self.setWindowTitle("Node Editor")
-        # self.show()
+        self.show()
 
         self.addDebugContent()
 
