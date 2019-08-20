@@ -1,4 +1,5 @@
 from node_graphics_node import QDMGraphicsNode
+from node_content_widget import QDMNodeContentWidget
 
 
 class Node(object):
@@ -7,7 +8,9 @@ class Node(object):
         self.scene = scene
         self.title = title
 
-        self.grNode = QDMGraphicsNode(self, self.title)
+        self.content = QDMNodeContentWidget()
+        self.grNode = QDMGraphicsNode(self)
+
         self.scene.addNode(self)  # 节点加入场景中
         self.scene.grScene.addItem(self.grNode)  # 在图形场景中加入图形节点项目
 

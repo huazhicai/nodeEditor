@@ -1,4 +1,6 @@
-from PyQt5.QtCore import Qt
+import os
+
+from PyQt5.QtCore import Qt, QFile
 from PyQt5.QtGui import QBrush, QPen, QFont, QColor
 from PyQt5.QtWidgets import *
 
@@ -10,6 +12,9 @@ from node_scene import Scene
 class NodeEditorWnd(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.stylesheet_filename = current_dir + '/qss/nodestyle.qss'
+        self.loadStylesheet(self.stylesheet_filename)
         # 控件设置
         self.initUI()
 
@@ -28,7 +33,7 @@ class NodeEditorWnd(QWidget):
         self.scene = Scene()
         # self.grScene = self.scene.grScene
 
-        node = Node(self.scene, "My Awesome Node")
+        node = Node(self.scene)
 
         # create graphics view 创建图形视图
         # The QGraphicsView class provides a widget
@@ -38,7 +43,7 @@ class NodeEditorWnd(QWidget):
         self.layout.addWidget(self.view)
 
         self.setWindowTitle("Node Editor")
-        self.show()
+        # self.show()
 
         self.addDebugContent()
 
@@ -72,3 +77,11 @@ class NodeEditorWnd(QWidget):
         line = self.scene.grScene.addLine(-200, -200, 400, -100, outlinePen)
         line.setFlag(QGraphicsItem.ItemIsMovable)
         line.setFlag(QGraphicsItem.ItemIsSelectable)
+
+    def loadStylesheet(self, filename):
+        print("STYLE loading:", filename)
+        file = QFile(filename)
+        file.open(QFile.ReadOnly | QFile.Text)
+        stylesheet = file.readAll()
+        # qApp = QApplication.instance()
+        QApplication.instance().setStyleSheet(str(stylesheet, encoding='utf-8'))

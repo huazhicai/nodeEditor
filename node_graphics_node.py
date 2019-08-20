@@ -6,8 +6,10 @@ from PyQt5.QtGui import *
 class QDMGraphicsNode(QGraphicsItem):
     """图形节点项目"""
 
-    def __init__(self, node, title="Node Graphics Item", parent=None):
+    def __init__(self, node, title='nudefine', parent=None):
         super().__init__(parent)
+        self.node = node
+        self.content = self.node.content
 
         self._title_color = Qt.yellow
         self._title_font = QFont("Ubuntu", 10)
@@ -29,7 +31,18 @@ class QDMGraphicsNode(QGraphicsItem):
         self.initTitle()
         self.title = title
 
+        self.initContent()
+
         self.initUI()
+
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, value):
+        self._title = value
+        self.title_item.setPlainText(self._title)  # 纯文本
 
     def boundingRect(self):
         """
@@ -57,14 +70,11 @@ class QDMGraphicsNode(QGraphicsItem):
             self.width - 2 * self._padding
         )
 
-    @property
-    def title(self):
-        return self._title
-
-    @title.setter
-    def title(self, value):
-        self._title = value
-        self.title_item.setPlainText(self._title)  # 纯文本
+    def initContent(self):
+        self.grContent = QGraphicsProxyWidget(self)
+        self.content.setGeometry(self.edge_size, self.title_height + self.edge_size,
+                                 self.width - 2 * self.edge_size, self.height - 2 * self.edge_size - self.title_height)
+        self.grContent.setWidget(self.content)
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """"动词画，paint谓词做为方法命名，把节点图形描画出在场景中"""
