@@ -24,6 +24,7 @@ class QDMGraphicsSocket(QGraphicsItem):
         painter.drawEllipse(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
 
     def boundingRect(self):
+        """限制绘图的边界 所有的绘图都必须在这个区域的内部，这个区域是矩形的"""
         return QRectF(
             -self.radius - self.outline_width,
             -self.radius - self.outline_width,

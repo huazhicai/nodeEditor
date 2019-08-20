@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt, QFile
 from PyQt5.QtGui import QBrush, QPen, QFont, QColor
 from PyQt5.QtWidgets import *
 
+from node_edge import Edge
 from node_graphics_view import QDMGraphicsView
 from node_node import Node
 from node_scene import Scene
@@ -33,14 +34,7 @@ class NodeEditorWnd(QWidget):
         self.scene = Scene()
         # self.grScene = self.scene.grScene
 
-        # 创建节点，传入场景，通过场景来展示，节点是场景的一个Item
-        node1 = Node(self.scene, "My Awesome Node 1", inputs=[1, 2, 3], outputs=[1])
-        node2 = Node(self.scene, "My Awesome Node 2", inputs=[1, 2, 3], outputs=[1])
-        node3 = Node(self.scene, "My Awesome Node 3", inputs=[1, 2, 3], outputs=[1])
-        # 设置节点位置，具体设置方法应该放在节点绘制类中
-        node1.setPos(-350, -250)
-        node2.setPos(-75, 0)
-        node3.setPos(200, -150)
+        self.addNodes()
 
         # create graphics view 创建图形视图
         # The QGraphicsView class provides a widget
@@ -52,7 +46,18 @@ class NodeEditorWnd(QWidget):
         self.setWindowTitle("Node Editor")
         # self.show()
 
-        self.addDebugContent()
+        # self.addDebugContent()
+
+    def addNodes(self):
+        node1 = Node(self.scene, "My Awesome Node 1", inputs=[1,2,3], outputs=[1])
+        node2 = Node(self.scene, "My Awesome Node 2", inputs=[1,2,3], outputs=[1])
+        node3 = Node(self.scene, "My Awesome Node 3", inputs=[1,2,3], outputs=[1])
+        node1.setPos(-350, -250)
+        node2.setPos(-75, 0)
+        node3.setPos(200, -150)
+
+        edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[0])
+        edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[0], type=2)
 
     def addDebugContent(self):
         greenBrush = QBrush(Qt.green)
@@ -91,4 +96,4 @@ class NodeEditorWnd(QWidget):
         file.open(QFile.ReadOnly | QFile.Text)
         stylesheet = file.readAll()
         # qApp = QApplication.instance()
-        QApplication.instance().setStyleSheet(str(stylesheet, encoding='utf-8'))
+        qApp.setStyleSheet(str(stylesheet, encoding='utf-8'))

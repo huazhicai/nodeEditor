@@ -50,6 +50,7 @@ class QDMGraphicsNode(QGraphicsItem):
         """
         QRectF 构造矩形， 矩形左上右下角坐标（0，0）矩形长宽（），
         鼠标点击此区域能够选择矩形节点图
+        限制绘图的边界 所有的绘图都必须在这个区域的内部，这个区域是矩形的
         """
         return QRectF(
             0,
