@@ -14,7 +14,7 @@ class NodeEditorWnd(QWidget):
 
     def initUI(self):
         # 设置窗口几何位置、大小， 屏幕左上角为坐标原点
-        self.setGeometry(100, 100, 1200, 800)
+        self.setGeometry(100, 100, 1000, 700)
 
         # 布局设置
         self.layout = QVBoxLayout()
