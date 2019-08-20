@@ -33,7 +33,14 @@ class NodeEditorWnd(QWidget):
         self.scene = Scene()
         # self.grScene = self.scene.grScene
 
-        node = Node(self.scene)
+        # 创建节点，传入场景，通过场景来展示，节点是场景的一个Item
+        node1 = Node(self.scene, "My Awesome Node 1", inputs=[1, 2, 3], outputs=[1])
+        node2 = Node(self.scene, "My Awesome Node 2", inputs=[1, 2, 3], outputs=[1])
+        node3 = Node(self.scene, "My Awesome Node 3", inputs=[1, 2, 3], outputs=[1])
+        # 设置节点位置，具体设置方法应该放在节点绘制类中
+        node1.setPos(-350, -250)
+        node2.setPos(-75, 0)
+        node3.setPos(200, -150)
 
         # create graphics view 创建图形视图
         # The QGraphicsView class provides a widget

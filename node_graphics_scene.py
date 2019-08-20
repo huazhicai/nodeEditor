@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 
 
 class QDMGraphicsScene(QGraphicsScene):
-    """图形场景"""
+    """图形场景绘制"""
     def __init__(self, scene, parent=None):
         super().__init__(parent)
 
@@ -33,7 +33,7 @@ class QDMGraphicsScene(QGraphicsScene):
 
     def drawBackground(self, painter, rect):
         """
-        绘画者绘制矩形背景图
+        绘画者绘制矩形栅格背景
         """
         super().drawBackground(painter, rect)
 
