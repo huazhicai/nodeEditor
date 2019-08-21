@@ -9,16 +9,17 @@ DEBUG = False
 
 
 class Socket:
-    def __init__(self, node, index, position=LEFT_TOP):
+    def __init__(self, node, index, position=LEFT_TOP, socket_type=1):
 
         self.node = node
         self.index = index
         self.position = position
+        self.socket_type = socket_type
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for node", self.node)
 
         # 绘制图形插座， 是在绘制好的图形节点上绘制插座，所以要传入绘制好的图形节点作为参数
-        self.grSocket = QDMGraphicsSocket(self.node.grNode)
+        self.grSocket = QDMGraphicsSocket(self.node.grNode, self.socket_type)
         # self.grSocket 对象会到其父类中寻找setPos方法，实现位置设置
         self.grSocket.setPos(*self.node.getSocketPosition(index, position))
 
@@ -31,4 +32,8 @@ class Socket:
         return res
 
     def setConnecedEdge(self, edge=None):
+        """连接边"""
         self.edge = edge
+
+    def hasEdge(self):
+        return self.edge is not None

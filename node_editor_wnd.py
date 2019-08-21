@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QFile
 from PyQt5.QtGui import QBrush, QPen, QFont, QColor
 from PyQt5.QtWidgets import *
 
-from node_edge import Edge
+from node_edge import Edge, EDGE_TYPE_BEZIER
 from node_graphics_view import QDMGraphicsView
 from node_node import Node
 from node_scene import Scene
@@ -49,15 +49,15 @@ class NodeEditorWnd(QWidget):
         # self.addDebugContent()
 
     def addNodes(self):
-        node1 = Node(self.scene, "My Awesome Node 1", inputs=[1,2,3], outputs=[1])
-        node2 = Node(self.scene, "My Awesome Node 2", inputs=[1,2,3], outputs=[1])
-        node3 = Node(self.scene, "My Awesome Node 3", inputs=[1,2,3], outputs=[1])
+        node1 = Node(self.scene, "My Awesome Node 1", inputs=[0, 0, 0], outputs=[1])
+        node2 = Node(self.scene, "My Awesome Node 2", inputs=[3, 3, 3], outputs=[1])
+        node3 = Node(self.scene, "My Awesome Node 3", inputs=[2, 2, 2], outputs=[1])
         node1.setPos(-350, -250)
         node2.setPos(-75, 0)
         node3.setPos(200, -150)
 
-        edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[0])
-        edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[0], type=2)
+        edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[0], edge_type=EDGE_TYPE_BEZIER)
+        edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[0], edge_type=EDGE_TYPE_BEZIER)
 
     def addDebugContent(self):
         greenBrush = QBrush(Qt.green)
