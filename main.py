@@ -1,17 +1,22 @@
+import os
 import sys
+import inspect
 from PyQt5.QtWidgets import *
 
-from node_editor_wnd import NodeEditorWnd
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
+
+from nodeeditor.utils import loadStylesheet
+from nodeeditor.node_editor_window import NodeEditorWindow
 
 if __name__ == '__main__':
-    # 1. 创建一个应用程序对象,传入参数列表
     app = QApplication(sys.argv)
 
-    # 2. 控件的操作
-    # 2.1 创建控件
-    wnd = NodeEditorWnd()
+    wnd = NodeEditorWindow()
+    wnd.nodeeditor.addNodes()
+    module_path = os.path.dirname(inspect.getfile(wnd.__class__))
 
-    # 2.3 展示控件
-    wnd.show()
-    # 3. 应用程序的执行, 进入到消息循环
+    loadStylesheet(os.path.join(module_path, 'qss/nodestyle.qss'))
+
     sys.exit(app.exec_())

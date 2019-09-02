@@ -4,42 +4,81 @@ from PyQt5.QtGui import *
 
 
 class QDMGraphicsNode(QGraphicsItem):
-    """绘制节点"""
-
-    def __init__(self, node, title='nudefine', parent=None):
+    def __init__(self, node, parent=None):
         super().__init__(parent)
         self.node = node
         self.content = self.node.content
 
-        self._title_color = Qt.yellow
+        # init our flags
+        self._was_moved = False
+        self._last_selected_state = False
+
+        self.initSizes()
+        self.initAssets()
+        self.initUI()
+
+    def initUI(self):
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+
+        # init title
+        self.initTitle()
+        self.title = self.node.title
+
+        self.initSockets()
+        self.initContent()
+
+    def initSizes(self):
+        self.width = 180
+        self.height = 240
+        self.edge_size = 10.0
+        self.title_height = 24.0
+        self._padding = 4.0
+
+    def initAssets(self):
+        self._title_color = Qt.white
         self._title_font = QFont("Ubuntu", 10)
 
-        self.width = 180  # 盒子尺寸
-        self.height = 240
-        self.edge_size = 10.0  # 边缘转角半径尺寸，小于等于title_height
-        self.title_height = 24.0  # 标题区高度
-        self._padding = 10.0  # 盒子边与盒子内部元素的距离
-
         self._pen_default = QPen(QColor("#7F000000"))
-        # 被选择后外边框线的颜色
         self._pen_selected = QPen(QColor("#FFFFA637"))
 
-        # 标题区颜色背景刷
         self._brush_title = QBrush(QColor("#FF313131"))
         self._brush_background = QBrush(QColor("#E3212121"))
 
-        self.initTitle()
-        self.title = title
-
-        self.initContent()
-        self.initSockets()
-
-
-        self.initUI()
+    def onSelected(self):
+        self.node.scene.grScene.itemSelected.emit()
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
-        self.node.updateConnectedEdges()
+
+        # optimize me! just update the selected nodes
+        for node in self.scene().scene.nodes:
+            if node.grNode.isSelected():
+                node.updateConnectedEdges()
+        self._was_moved = True
+
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+
+        # handle when grNode moved
+        if self._was_moved:
+            self._was_moved = False
+            self.node.scene.history.storeHistory("Node moved", setModified=True)
+
+            self.node.scene.resetLastSelectedStates()
+            self._last_selected_state = True
+
+            # we need to store the last selected state, because moving does also select the nodes
+            self.node.scene._last_selected_items = self.node.scene.getSelectedItems()
+
+            # now we want to skip storing selection
+            return
+
+        # handle when grNode was clicked on
+        if self._last_selected_state != self.isSelected() or self.node.scene._last_selected_items != self.node.scene.getSelectedItems():
+            self.node.scene.resetLastSelectedStates()
+            self._last_selected_state = self.isSelected()
+            self.onSelected()
 
     @property
     def title(self):
@@ -48,33 +87,25 @@ class QDMGraphicsNode(QGraphicsItem):
     @title.setter
     def title(self, value):
         self._title = value
-        self.title_item.setPlainText(self._title)  # 纯文本
+        self.title_item.setPlainText(self._title)
 
     def boundingRect(self):
-        """
-        QRectF 构造矩形， 矩形左上右下角坐标（0，0）矩形长宽（），
-        鼠标点击此区域能够选择矩形节点图
-        限制绘图的边界 所有的绘图都必须在这个区域的内部，这个区域是矩形的
-        """
         return QRectF(
             0,
             0,
-            self.height,
+            self.width,
             self.height
         ).normalized()
 
-    def initUI(self):
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-
     def initTitle(self):
         self.title_item = QGraphicsTextItem(self)
+        self.title_item.node = self.node
         self.title_item.setDefaultTextColor(self._title_color)
         self.title_item.setFont(self._title_font)
-        self.title_item.setPos(self._padding, 0)  # x方向的距内边宽
+        self.title_item.setPos(self._padding, 0)
         self.title_item.setTextWidth(
-            # 设置文本宽度，超过宽度就换行，2padding，充满后就正好居中
-            self.width - 2 * self._padding
+            self.width
+            - 2 * self._padding
         )
 
     def initContent(self):
@@ -87,15 +118,10 @@ class QDMGraphicsNode(QGraphicsItem):
         pass
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        """"动词画，paint谓词做为方法命名，把节点图形描画出在场景中"""
         # title
-        # QPainterPath 类（绘图路径）提供了一个容器，用于绘图操作，可以创建和重用图形形状。
         path_title = QPainterPath()
-        # 非零弯曲规则, 只填充图形内的点
         path_title.setFillRule(Qt.WindingFill)
-        # 绘制圆角矩形
         path_title.addRoundedRect(0, 0, self.width, self.title_height, self.edge_size, self.edge_size)
-        # 因为画了四个圆角，需要把下面两个圆角回填回来
         path_title.addRect(0, self.title_height - self.edge_size, self.edge_size, self.edge_size)
         path_title.addRect(self.width - self.edge_size, self.title_height - self.edge_size, self.edge_size,
                            self.edge_size)
@@ -116,7 +142,6 @@ class QDMGraphicsNode(QGraphicsItem):
 
         # outline
         path_outline = QPainterPath()
-        # 画圆角矩形
         path_outline.addRoundedRect(0, 0, self.width, self.height, self.edge_size, self.edge_size)
         painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
         painter.setBrush(Qt.NoBrush)
